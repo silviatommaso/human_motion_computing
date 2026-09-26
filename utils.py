@@ -1,5 +1,6 @@
 
 import pandas as pd
+from itertools import combinations as itertools_combinations
 import numpy as np
 
 CHANNEL_NAMES = [
@@ -27,12 +28,12 @@ CHANNEL_NAMES = [
 """
 Function that splits the input into data and labels (movements)
 """
-def input_generation(input_path, ablation, ABLATION_CHANNELS):
+def input_generation(input_path, channels_to_remove=None):
 
-    X = []      # -> input signals data     
+    X = []      # -> input signals data
     y = []      # -> movements (labels)
 
-    channel_names = CHANNEL_NAMES
+    channel_names = CHANNEL_NAMES.copy()
 
     csv_files = sorted(input_path.glob("*.csv"))
 
@@ -45,17 +46,57 @@ def input_generation(input_path, ablation, ABLATION_CHANNELS):
         # data
         df = pd.read_csv(file_path)
         x = df.to_numpy(dtype=np.float32).T
-        
+
         X.append(x)
 
     y = np.array(y)
 
 
     # if ablation
-    if ablation:
-        channels_to_remove = ABLATION_CHANNELS[ablation]
+    if channels_to_remove:
 
         X = [np.delete(x, channels_to_remove, axis=0) for x in X]
+
         channel_names = [name for i, name in enumerate(channel_names) if i not in channels_to_remove]
 
     return X, y, channel_names
+
+
+
+
+
+
+def dilatation_combinations(data):
+
+    combinations_dict = {}
+
+    for r in range(1, len(data)):
+        for combo in itertools_combinations(data, r):
+
+            name = "remove_" + "_".join(map(str, combo))
+            combinations_dict[name] = list(combo)
+
+    return combinations_dict
+
+
+
+def channel_combinations(groups):
+
+    result = {}
+
+    names = list(groups.keys())
+
+    for r in range(1, len(names)):
+
+        for combo in itertools_combinations(names, r):
+
+            channels = []
+
+            for name in combo:
+                channels.extend(groups[name])
+
+            experiment_name = "remove_" + "_".join(combo)
+
+            result[experiment_name] = sorted(set(channels))
+
+    return result
