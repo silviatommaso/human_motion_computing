@@ -66,7 +66,7 @@ def input_generation(input_path, channels_to_remove=None):
 
 
 
-def dilatation_combinations(data):
+def dilation_combinations(data):
 
     combinations_dict = {}
 
