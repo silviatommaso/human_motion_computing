@@ -1,0 +1,6 @@
+n_removed_signals,mean_delta_precision,mean_delta_recall,min_delta_precision,min_delta_recall
+1,-0.028,-0.032,-0.175,-0.25
+2,-0.041,-0.041,-0.344,-0.333
+3,-0.045,-0.044,-0.344,-0.417
+4,-0.071,-0.073,-0.344,-0.417
+5,-0.116,-0.134,-0.567,-0.583
